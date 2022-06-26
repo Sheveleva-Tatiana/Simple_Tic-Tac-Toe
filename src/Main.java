@@ -4,23 +4,6 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static int checkNumberXO(char[] chArray) {
-        int n_x = 0, n_o = 0;
-        int i = 0;
-        while (i < 9) {
-            if (chArray[i] == 'X') {
-                n_x++;
-            } else if (chArray[i] == 'O') {
-                n_o++;
-            }
-            i++;
-        }
-        if (n_x != n_o && (n_x + n_o) != 9) {
-            return (1);
-        }
-        return (checkWin(chArray));
-    }
-
     public static int position(char one, char two, char three) {
         if (one == two && two == three) {
             return (1);
@@ -29,80 +12,46 @@ public class Main {
     }
 
     public static int checkWin(char[] chArray) {
-        int i = 0;
         char ch = 0;
 
-        i += position(chArray[0], chArray[1], chArray[2]);
-        if (i > 0) {
+        if (chArray[0] != ' ' && position(chArray[0], chArray[1], chArray[2]) > 0) {
             ch = chArray[0];
-        }
-        i += position(chArray[3], chArray[4], chArray[5]);
-        if (i > 0) {
+        } else if (chArray[3] != ' ' && position(chArray[3], chArray[4], chArray[5]) > 0) {
             ch = chArray[3];
-        }
-        i += position(chArray[6], chArray[7], chArray[8]);
-        if (i > 0) {
+        } else if (chArray[6] != ' ' && position(chArray[6], chArray[7], chArray[8]) > 0) {
             ch = chArray[6];
-        }
-
-        i += position(chArray[0], chArray[3], chArray[6]);
-        if (i > 0) {
+        } else if (chArray[0] != ' ' && position(chArray[0], chArray[3], chArray[6]) > 0) {
             ch = chArray[0];
-        }
-        i += position(chArray[1], chArray[4], chArray[7]);
-        if (i > 0) {
+        } else if (chArray[1] != ' ' && position(chArray[1], chArray[4], chArray[7]) > 0) {
             ch = chArray[1];
-        }
-        i += position(chArray[2], chArray[5], chArray[8]);
-        if (i > 0) {
+        } else if (chArray[2] != ' ' && position(chArray[2], chArray[5], chArray[8]) > 0) {
             ch = chArray[2];
-        }
-
-        i += position(chArray[0], chArray[4], chArray[8]);
-        if (i > 0) {
+        } else if (chArray[0] != ' ' && position(chArray[0], chArray[4], chArray[8]) > 0) {
             ch = chArray[0];
-        }
-        i += position(chArray[2], chArray[4], chArray[6]);
-        if (i > 0) {
+        } else if (chArray[2] != ' ' && position(chArray[2], chArray[4], chArray[6]) > 0) {
             ch = chArray[2];
         }
 
-        if (i > 1) {
-            return (5);
-        } else if (i == 0) {
-            int count = 0;
-            for (int j = 0; j < 9; j++) {
-                if (chArray[j] == 'X' ||  chArray[j] == 'O') {
-                    count++;
-                }
-            }
-            if (count < 9) {
-                return (0);
-            }
+        if (ch == 'X') {
+            return (1);
+        } else if (ch == 'O') {
             return (2);
-        } else if (ch == 'X') {
-            return (3);
-        }  else if (ch == 'O') {
-            return (4);
         }
-        return (6);
+        return (3);
     }
 
-    public static void analysisGame(char[] chArray) {
-        int flag = checkNumberXO(chArray);
-        if (flag == 0) {
-            System.out.println("Game not finished");
+    public static int analysisGame(char[] chArray) {
+        int flag = checkWin(chArray);
+        if (flag == 3) {
+            return 0;
         } else if (flag == 1) {
-            System.out.println("Impossible");
-        } else if (flag == 2) {
-            System.out.println("Draw");
-        } else if (flag == 3) {
             System.out.println("X wins");
-        } else if (flag == 4) {
+            return 1;
+        } else if (flag == 2) {
             System.out.println("O wins");
-        } else {
-            System.out.println("Impossible");
+            return 1;
         }
+        return 0;
     }
 
     public static void printMap(char[] chArray) {
@@ -113,20 +62,20 @@ public class Main {
         System.out.println("---------");
     }
 
-    public static void checkSpaceForStep(int first, int second, char[] chArray) {
+    public static void checkSpaceForStep(int first, int second, char[] chArray, char ch) {
         System.out.println(first);
         System.out.println(second);
         if (chArray[first * 3 - 4 + second] == 'X' || chArray[first * 3 - 4 + second] == 'O') {
             System.out.println("This cell is occupied! Choose another one!");
-            getCoords(chArray);
+            getCoords(chArray, ch);
             return;
         } else {
-            chArray[first * 3 - 4 + second] = 'X';
+            chArray[first * 3 - 4 + second] = ch;
             printMap(chArray);
         }
     }
 
-    public static void getCoords(char[] chArray) {
+    public static void getCoords(char[] chArray, char ch) {
         Scanner scanner = new Scanner(System.in);
         int firstCoord = 0;
         int secondCoord = 0;
@@ -140,31 +89,39 @@ public class Main {
                     secondCoord = scanner.nextInt();
                 } else {
                     System.out.println("You should enter numbers!");
-                    getCoords(chArray);
+                    getCoords(chArray, ch);
                     return;
                 }
             } else {
                 System.out.println("You should enter numbers!");
-                getCoords(chArray);
+                getCoords(chArray, ch);
                 return;
             }
         }
         if (firstCoord > 3 || secondCoord > 3 || firstCoord < 1 || secondCoord < 1) {
             System.out.println("Coordinates should be from 1 to 3!");
-            getCoords(chArray);
+            getCoords(chArray, ch);
             return;
         } else {
-            checkSpaceForStep(firstCoord, secondCoord, chArray);
+            checkSpaceForStep(firstCoord, secondCoord, chArray, ch);
         }
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter cells: ");
-        String str = scanner.nextLine();
-        char[] chArray = str.toCharArray();
+        char[] chArray = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
         printMap(chArray);
-        getCoords(chArray);
-//        analysisGame(chArray);
+        int step = 0;
+        char ch = 'X';
+        while (analysisGame(chArray) != 1) {
+            getCoords(chArray, ch);
+            if (step == 0) {
+                ch = 'O';
+                step = 1;
+            } else {
+                ch = 'X';
+                step = 0;
+            }
+        }
     }
 }
