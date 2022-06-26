@@ -1,3 +1,4 @@
+package tictactoe;
 import java.util.Scanner;
 
 
@@ -104,16 +105,66 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter cells: ");
-        String str = scanner.nextLine();
-        char[] chArray = str.toCharArray();
+    public static void printMap(char[] chArray) {
         System.out.println("---------");
         System.out.printf("| %c %c %c |%n", chArray[0], chArray[1], chArray[2]);
         System.out.printf("| %c %c %c |%n", chArray[3], chArray[4], chArray[5]);
         System.out.printf("| %c %c %c |%n", chArray[6], chArray[7], chArray[8]);
         System.out.println("---------");
-        analysisGame(chArray);
+    }
+
+    public static void checkSpaceForStep(int first, int second, char[] chArray) {
+        System.out.println(first);
+        System.out.println(second);
+        if (chArray[first * 3 - 4 + second] == 'X' || chArray[first * 3 - 4 + second] == 'O') {
+            System.out.println("This cell is occupied! Choose another one!");
+            getCoords(chArray);
+            return;
+        } else {
+            chArray[first * 3 - 4 + second] = 'X';
+            printMap(chArray);
+        }
+    }
+
+    public static void getCoords(char[] chArray) {
+        Scanner scanner = new Scanner(System.in);
+        int firstCoord = 0;
+        int secondCoord = 0;
+
+        System.out.print("Enter the coordinates: ");
+
+        if (scanner.hasNext()) {
+            if (scanner.hasNextInt()) {
+                firstCoord = scanner.nextInt();
+                if (scanner.hasNextInt()) {
+                    secondCoord = scanner.nextInt();
+                } else {
+                    System.out.println("You should enter numbers!");
+                    getCoords(chArray);
+                    return;
+                }
+            } else {
+                System.out.println("You should enter numbers!");
+                getCoords(chArray);
+                return;
+            }
+        }
+        if (firstCoord > 3 || secondCoord > 3 || firstCoord < 1 || secondCoord < 1) {
+            System.out.println("Coordinates should be from 1 to 3!");
+            getCoords(chArray);
+            return;
+        } else {
+            checkSpaceForStep(firstCoord, secondCoord, chArray);
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter cells: ");
+        String str = scanner.nextLine();
+        char[] chArray = str.toCharArray();
+        printMap(chArray);
+        getCoords(chArray);
+//        analysisGame(chArray);
     }
 }
